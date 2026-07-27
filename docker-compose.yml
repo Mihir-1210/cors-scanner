@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  cors-scanner:
+    build: .
+    image: cors-scanner:latest
+    container_name: cors-scanner
+    volumes:
+      - ./output:/app/output
+      - ./wordlists:/app/wordlists
+      - ${PWD}/urls.txt:/app/urls.txt:ro
+    environment:
+      - PYTHONUNBUFFERED=1
+    # Example command - override as needed
+    command: ["-f", "urls.txt", "-o", "/app/output/results.json", "-of", "json"]
+    
+  # For quick single URL scan
+  cors-scanner-quick:
+    build: .
+    image: cors-scanner:latest
+    container_name: cors-scanner-quick
+    profiles: ["quick"]
+    environment:
+      - PYTHONUNBUFFERED=1
+    # Usage: docker compose --profile quick run cors-scanner-quick -u https://example.com
